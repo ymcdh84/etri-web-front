@@ -1,0 +1,36 @@
+stages:
+  - libs
+  - build
+  - deploy
+
+npm:
+  stage: libs
+  only:
+    - master
+  cache:
+    paths:
+      - node_modules
+  script:
+    - npm install
+
+build:
+  stage: build
+  only:
+    - master
+  cache:
+    paths:
+      - dist
+  script:
+    - npm run build
+
+deploy:
+  stage: deploy
+  only:
+    - master
+  cache:
+    paths:
+      - dist
+  script:
+    - sudo rm -rf /etc/nginx/etri-platform-front
+    - sudo cp -r dist /etc/nginx/etri-platform-front
+    - sudo nginx -s reload
